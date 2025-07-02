@@ -2,4 +2,5 @@ streamlit
 pandas
 geopandas
 folium
+matplotlib
 streamlit_folium
