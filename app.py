@@ -31,13 +31,18 @@ mapa_trimestres = {
     "4": [2, 3, 4]
 }
 
-# --- Interface ---
-st.set_page_config(layout="wide")
+# --- Interface ---st.set_page_config(layout="wide")
 st.title("🔥 Dashboard de Incendios em Terras Indígenas")
 
-ano = st.selectbox("Selecione o ano", list(range(2012, 2024)), index=0)
-trimestre_nome = st.selectbox("Selecione o trimestre", list(trimestres_nome.values()))
-trimestre = [k for k, v in trimestres_nome.items() if v == trimestre_nome][0]
+# Seletor lado a lado
+col1, col2 = st.columns(2)
+
+with col1:
+    ano = st.selectbox("Selecione o ano", list(range(2012, 2024)), index=0)
+
+with col2:
+    trimestre_nome = st.selectbox("Selecione o trimestre", list(trimestres_nome.values()))
+    trimestre = [k for k, v in trimestres_nome.items() if v == trimestre_nome][0]
 
 # --- Carrega GeoJSON ---
 try:
