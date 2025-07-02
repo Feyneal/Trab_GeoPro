@@ -46,43 +46,61 @@ except Exception as e:
     st.error(f"Erro ao carregar o GeoJSON: {e}")
     st.stop()
 
-# --- Tabela anual: área queimada e focos ---
-st.header("📊 Tabela Anual de Área de Incendio Florestal e Focos de Calor")
+# --- Tabela combinada: área queimada e focos anuais + trimestrais ---
+st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
 
 dados_tabela = []
+meses_trimestre = mapa_trimestres[trimestre]
+
 for ti in gdf_tis["TI_nome"]:
-    aq_path = os.path.join(CSV_ANUAL_AQ, f"area_queimada_anual_{ti}.csv")
-    fc_path = os.path.join(CSV_ANUAL_FC, f"focos_calor_anual_{ti}.csv")
+    aq_anual_path = os.path.join(CSV_ANUAL_AQ, f"area_queimada_anual_{ti}.csv")
+    fc_anual_path = os.path.join(CSV_ANUAL_FC, f"focos_calor_anual_{ti}.csv")
+    aq_trim_path = os.path.join(CSV_TRIMESTRAL_AQ, f"{ti}_{ano}.csv")
+    fc_trim_path = os.path.join(CSV_TRIMESTRAL_FC, f"{ti}_{ano}.csv")
+
+    area_anual = focos_anual = area_trim = focos_trim = "-"
+
     try:
-        aq_df = pd.read_csv(aq_path)
-        fc_df = pd.read_csv(fc_path)
+        # --- Anual ---
+        aq_df = pd.read_csv(aq_anual_path)
+        fc_df = pd.read_csv(fc_anual_path)
+        area_val = aq_df.loc[aq_df["Ano"] == ano, "Area_Queimada_Anual"].values
+        focos_val = fc_df.loc[fc_df["Ano"] == ano, "Focos_Anual"].values
 
-        area = aq_df.loc[aq_df["Ano"] == ano, "Area_Queimada_Anual"].values
-        focos = fc_df.loc[fc_df["Ano"] == ano, "Focos_Anual"].values
+        if len(area_val) > 0:
+            area_anual = area_val[0].item() if isinstance(area_val[0], np.generic) else area_val[0]
+        if len(focos_val) > 0:
+            focos_anual = focos_val[0].item() if isinstance(focos_val[0], np.generic) else focos_val[0]
 
+        # --- Trimestral ---
+        aq_df_t = pd.read_csv(aq_trim_path)
+        aq_df_t["Month"] = pd.to_numeric(aq_df_t["Month"], errors='coerce')
+        if 1 in meses_trimestre and ano > 2012:
+            aq_prev = pd.read_csv(os.path.join(CSV_TRIMESTRAL_AQ, f"{ti}_{ano - 1}.csv"))
+            aq_prev["Month"] = pd.to_numeric(aq_prev["Month"], errors='coerce')
+            aq_df_t = pd.concat([aq_prev, aq_df_t], ignore_index=True)
+        area_trim = aq_df_t[aq_df_t["Month"].isin(meses_trimestre)]["Burned_Area_hectares"].sum()
 
-        area_val = area[0] if isinstance(area, (np.ndarray, list)) and len(area) > 0 else "-"
-        focos_val = focos[0] if isinstance(focos, (np.ndarray, list)) and len(focos) > 0 else "-"
-
-        if isinstance(area_val, np.generic):
-            area_val = area_val.item()
-        if isinstance(focos_val, np.generic):
-            focos_val = focos_val.item()
-
-        dados_tabela.append({
-            "Terra Indígena": ti,
-            "Área queimada (ha)": area_val,
-            "Focos de Calor": focos_val
-        })
+        fc_df_t = pd.read_csv(fc_trim_path)
+        fc_df_t["Mes"] = pd.to_numeric(fc_df_t["Mes"], errors='coerce')
+        if 1 in meses_trimestre and ano > 2012:
+            fc_prev = pd.read_csv(os.path.join(CSV_TRIMESTRAL_FC, f"{ti}_{ano - 1}.csv"))
+            fc_prev["Mes"] = pd.to_numeric(fc_prev["Mes"], errors='coerce')
+            fc_df_t = pd.concat([fc_prev, fc_df_t], ignore_index=True)
+        focos_trim = fc_df_t[fc_df_t["Mes"].isin(meses_trimestre)]["Total_Focos"].sum()
 
     except Exception as e:
-        dados_tabela.append({
-            "Terra Indígena": ti,
-            "Área Queimada (ha)": "-",
-            "Focos de Calor": "-"
-        })
+        pass
 
-# Exibe tabela
+    dados_tabela.append({
+        "Terra Indígena": ti,
+        "Área Queimada Anual (ha)": area_anual,
+        "Focos de Calor Anual": focos_anual,
+        "Área Queimada Trimestral (ha)": area_trim,
+        "Focos de Calor Trimestral": focos_trim
+    })
+
+# Exibe a tabela
 st.dataframe(pd.DataFrame(dados_tabela))
 
 # --- Mapa Interativo ---
