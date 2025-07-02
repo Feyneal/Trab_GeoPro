@@ -122,11 +122,6 @@ for ti in gdf_tis["TI_nome"]:
 # Exibe a tabela
 #st.dataframe(pd.DataFrame(dados_tabela))
 
-col6, col7 = st.columns([2,1])
-
-with col6:
-    st.dataframe(pd.DataFrame(dados_tabela))
-
 # --- Gráfico de série temporal por TI com dois eixos y (AQ em ha, FC absoluto) ---
 #st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor (absoluto)")
 
@@ -174,10 +169,19 @@ try:
 
     ax.grid(True)
 
-    st.pyplot(fig)
+    #st.pyplot(fig)
 
 except Exception as e:
     st.warning(f"Erro ao carregar dados de {ti_escolhida}: {e}")
+
+
+col6, col7 = st.columns([2,1])
+
+with col6:
+    st.dataframe(pd.DataFrame(dados_tabela))
+    
+with col7:
+    st.pyplot(fig)
 
 # --- Mapa Interativo ---
 st.header("🗺️ Visualização Trimestral no Mapa")
