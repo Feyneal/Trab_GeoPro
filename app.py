@@ -118,23 +118,23 @@ try:
     aq_df = pd.read_csv(csv_aq)
     fc_df = pd.read_csv(csv_fc)
 
-    st.write(f"Arquivo AQ: {csv_aq}")
-    st.write(aq_df.head())
+    #st.write(f"Arquivo AQ: {csv_aq}")
+    #st.write(aq_df.head())
 
-    st.write(f"Arquivo FC: {csv_fc}")
-    st.write(fc_df.head())
+    #st.write(f"Arquivo FC: {csv_fc}")
+    #st.write(fc_df.head())
 
     aq_df = aq_df.dropna(subset=["Area_Queimada_Anual"])
     fc_df = fc_df.dropna(subset=["Focos_Anual"])
 
     anos = sorted(set(aq_df["Ano"]) & set(fc_df["Ano"]))
-    st.write("Anos comuns:", anos)
+    #st.write("Anos comuns:", anos)
 
     aq_vals = aq_df[aq_df["Ano"].isin(anos)]["Area_Queimada_Anual"].values
     fc_vals = fc_df[fc_df["Ano"].isin(anos)]["Focos_Anual"].values
 
-    st.write("Valores AQ:", aq_vals)
-    st.write("Valores FC:", fc_vals)
+    #st.write("Valores AQ:", aq_vals)
+    #st.write("Valores FC:", fc_vals)
 
     # Normaliza para comparar como percentual (0-100%)
     if len(aq_vals) > 1:
