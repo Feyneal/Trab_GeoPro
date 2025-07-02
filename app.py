@@ -212,7 +212,7 @@ legend_html = """
 <div style='position: fixed;
      bottom: 35px; right: 35px; width: 190px; height: auto;
      z-index:9999; font-size:13px;
-     background-color: white;
+     background-color: light-grey;
      padding: 10px;
      border:2px solid grey;
      border-radius:5px;
