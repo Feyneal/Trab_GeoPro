@@ -214,7 +214,7 @@ legend_html = """
     right: 35px;
     width: 220px;
     z-index: 9999;
-    background-color: #ffffff;
+    background-color: #555555;
     border: 2px solid #444;
     border-radius: 5px;
     padding: 10px;
