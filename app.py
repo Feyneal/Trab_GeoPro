@@ -31,6 +31,15 @@ mapa_trimestres = {
     "4": [2, 3, 4]
 }
 
+# --- Carrega GeoJSON ---
+try:
+    gdf_tis = gpd.read_file(TI_GEOJSON)
+    gdf_tis["TI_nome"] = gdf_tis["Nome_TI"].astype(str)
+    gdf_tis = gdf_tis.to_crs(epsg=4326)
+except Exception as e:
+    st.error(f"Erro ao carregar o GeoJSON: {e}")
+    st.stop()
+    
 # --- Interface ---st.set_page_config(layout="wide")
 st.title("🔥 Dashboard de Incendios em Terras Indígenas")
 
@@ -55,15 +64,6 @@ with col4:
 
 with col5:
     ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
-
-# --- Carrega GeoJSON ---
-try:
-    gdf_tis = gpd.read_file(TI_GEOJSON)
-    gdf_tis["TI_nome"] = gdf_tis["Nome_TI"].astype(str)
-    gdf_tis = gdf_tis.to_crs(epsg=4326)
-except Exception as e:
-    st.error(f"Erro ao carregar o GeoJSON: {e}")
-    st.stop()
 
 # --- Tabela combinada: área queimada e focos anuais + trimestrais ---
 #st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
