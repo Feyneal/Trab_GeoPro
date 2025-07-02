@@ -9,7 +9,7 @@ from streamlit_folium import st_folium
 
 # --- Caminhos base ---
 BASE_DIR = os.path.dirname(__file__)
-TI_GEOJSON = os.path.join(BASE_DIR, "Data", "TIS_amazonia.geojson")
+TI_GEOJSON = os.path.join(BASE_DIR, "data", "TIS_amazonia.geojson")
 CSV_ANUAL_AQ = os.path.join(BASE_DIR, "data", "CSV_Anual", "AreaQueimada_Anual")
 CSV_ANUAL_FC = os.path.join(BASE_DIR, "data", "CSV_Anual", "FocosCalor_Anual")
 CSV_TRIMESTRAL_AQ = os.path.join(BASE_DIR, "data", "CSV_Trimestral", "AQ_trimestral")
