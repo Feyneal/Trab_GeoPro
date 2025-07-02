@@ -65,7 +65,7 @@ with col4:
 with col5:
     ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
 
-col6, col7 = st.columns(3)
+col6, col7 = st.columns(2)
 
 # --- Tabela combinada: área queimada e focos anuais + trimestrais ---
 #st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
