@@ -214,7 +214,7 @@ border_color = "#888" if tema_escuro else "#444"
 
 legend_html = f"""
 <div style='position: fixed;
-     bottom: 35px; right: 35px; width: 200px; height: auto;
+     top: 75px; right: 35px; width: 200px; height: auto;
      z-index:9999; font-size:13px;
      background-color: {bg_color};
      color: {text_color};
