@@ -31,7 +31,7 @@ mapa_trimestres = {
 
 # --- Interface ---
 st.set_page_config(layout="wide")
-st.title("🔥 Dashboard de Queimadas em Terras Indígenas")
+st.title("🔥 Dashboard de Incendios em Terras Indígenas")
 
 ano = st.selectbox("Selecione o ano", list(range(2012, 2024)), index=0)
 trimestre_nome = st.selectbox("Selecione o trimestre", list(trimestres_nome.values()))
@@ -71,7 +71,7 @@ for ti in gdf_tis["TI_nome"]:
 
         dados_tabela.append({
             "Terra Indígena": ti,
-            "Área Queimada (ha)": area_val,
+            "Área queimada (ha)": area_val,
             "Focos de Calor": focos_val
         })
 
