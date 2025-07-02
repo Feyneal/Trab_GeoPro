@@ -44,7 +44,7 @@ with col2:
     st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor (absoluto)")
 
 
-col3, col4, col5 = st.columns(2)
+col3, col4, col5 = st.columns(3)
 
 with col3:
     ano = st.selectbox("Selecione o ano", list(range(2012, 2024)), index=0)
