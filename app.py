@@ -166,6 +166,17 @@ colormap = cm.linear.YlOrRd_09.scale(
 )
 colormap.caption = "Área queimada relativa (%)"
 
+# Pontos de focos de calor
+for pt in pontos_focos:
+    folium.CircleMarker(
+        location=(pt["lat"], pt["lon"]),
+        radius=2 + pt["focos"]**0.5,
+        color="blue",
+        fill=True,
+        fill_opacity=0.6,
+        tooltip=f"{pt['focos']} focos de calor"
+    ).add_to(m)
+
 # Adiciona camada GeoJson colorida
 folium.GeoJson(
     gdf_tis,
@@ -192,19 +203,6 @@ folium.GeoJson(
 ).add_to(m)
 
 colormap.add_to(m)
-
-# Pontos de focos de calor
-for pt in pontos_focos:
-    folium.CircleMarker(
-        location=(pt["lat"], pt["lon"]),
-        radius=2 + pt["focos"]**0.5,
-        color="blue",
-        fill=True,
-        fill_opacity=0.6,
-        tooltip=f"{pt['focos']} focos de calor"
-    ).add_to(m)
-
-
 
 folium.LayerControl().add_to(m)
 
