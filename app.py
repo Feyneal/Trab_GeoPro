@@ -133,8 +133,8 @@ try:
     aq_vals = aq_df[aq_df["Ano"].isin(anos)]["Area_Queimada_Anual"].values
     fc_vals = fc_df[fc_df["Ano"].isin(anos)]["Focos_Anual"].values
 
-    #st.write("Valores AQ:", aq_vals)
-    #st.write("Valores FC:", fc_vals)
+    st.write("Valores AQ:", aq_vals)
+    st.write("Valores FC:", fc_vals)
 
     # Normaliza para comparar como percentual (0-100%)
     if len(aq_vals) > 1:
