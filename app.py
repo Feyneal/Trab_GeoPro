@@ -35,12 +35,12 @@ mapa_trimestres = {
 st.title("🔥 Dashboard de Incendios em Terras Indígenas")
 
 # Seletor lado a lado
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
 
-with col2:
+with col3:
     st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor (absoluto)")
 
 
