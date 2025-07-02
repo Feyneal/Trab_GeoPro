@@ -141,7 +141,7 @@ try:
     ax.plot(anos, aq_percent, color="red", marker='o', label="Área Queimada (%)")
     ax.set_ylabel("Área Queimada (%)", color="red")
     ax.tick_params(axis='y', labelcolor="red")
-    ax.set_ylim(0, max(100, aq_percent.max()*1.1))  # Limite de 100% ou um pouco acima do máximo
+    ax.set_ylim(0, aq_percent.max()*1.1)
 
     # Eixo secundário para FC absoluto
     ax2 = ax.twinx()
