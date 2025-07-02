@@ -44,7 +44,7 @@ except Exception as e:
 st.title("🔥 Dashboard de Incendios em Terras Indígenas")
 
 # Seletor lado a lado
-col1, col2, col3 = st.columns(3)
+col1, col3 = st.columns([2,1])
 
 with col1:
     st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
@@ -64,6 +64,8 @@ with col4:
 
 with col5:
     ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
+
+col6, col7 = st.columns(3)
 
 # --- Tabela combinada: área queimada e focos anuais + trimestrais ---
 #st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
