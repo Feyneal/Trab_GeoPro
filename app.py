@@ -109,6 +109,7 @@ st.dataframe(pd.DataFrame(dados_tabela))
 st.header("📈 Evolução Temporal de Área Queimada (%) e Focos de Calor (absoluto)")
 
 ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
+aq_vals_ha = aq_df[aq_df["Ano"].isin(anos)]["Area_Queimada_Anual"].values
 
 # Busca a área da TI para conversão em percentual
 area_ti_m2 = gdf_tis.loc[gdf_tis["TI_nome"] == ti_escolhida, "geometry"].area.values[0]  # área em graus²
