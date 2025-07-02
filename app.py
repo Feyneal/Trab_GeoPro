@@ -207,4 +207,25 @@ for pt in pontos_focos:
 
 
 folium.LayerControl().add_to(m)
+
+# Adiciona legenda explicativa para a bolinha azul
+legend_html = """
+<div style='position: fixed;
+     bottom: 35px; right: 35px; width: 180px; height: auto;
+     z-index:9999; font-size:14px;
+     background-color: white;
+     padding: 10px;
+     border:2px solid grey;
+     border-radius:5px;
+     box-shadow: 2px 2px 5px rgba(0,0,0,0.3);'>
+
+<b>🔵 Focos de Calor</b><br>
+Tamanho proporcional<br>
+à quantidade de focos<br>
+no trimestre selecionado.
+</div>
+"""
+m.get_root().html.add_child(folium.Element(legend_html))
+
 st_folium(m, width=1000, height=600)
+
