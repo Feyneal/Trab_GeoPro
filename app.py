@@ -187,5 +187,6 @@ for pt in pontos_focos:
     ).add_to(m)
 
 
+
 folium.LayerControl().add_to(m)
 st_folium(m, width=1000, height=600)
