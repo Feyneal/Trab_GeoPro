@@ -144,7 +144,7 @@ try:
     # Valores absolutos focos de calor
     fc_vals = fc_df[fc_df["Ano"].isin(anos)]["Focos_Anual"].values
 
-    fig, ax = plt.subplots(figsize=(2, 1))
+    fig, ax = plt.subplots(figsize=(4, 2))
 
     # Eixo principal para AQ em hectares
     ax.plot(anos, aq_vals_ha, color="red", marker='o', label="Área Queimada (ha)")
