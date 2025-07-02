@@ -44,12 +44,12 @@ except Exception as e:
 st.title("🔥 Dashboard de Incendios em Terras Indígenas")
 
 # Seletor lado a lado
-col1, col3 = st.columns([2,1])
+col1, col2 = st.columns([2,1])
 
 with col1:
     st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
 
-with col3:
+with col2:
     st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor (absoluto)")
 
 
@@ -65,7 +65,10 @@ with col4:
 with col5:
     ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
 
-col6, col7 = st.columns(2)
+col6, col7 = st.columns([2,1])
+
+with col6:
+    st.dataframe(pd.DataFrame(dados_tabela))
 
 # --- Tabela combinada: área queimada e focos anuais + trimestrais ---
 #st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
@@ -122,7 +125,7 @@ for ti in gdf_tis["TI_nome"]:
     })
 
 # Exibe a tabela
-st.dataframe(pd.DataFrame(dados_tabela))
+#st.dataframe(pd.DataFrame(dados_tabela))
 
 # --- Gráfico de série temporal por TI com dois eixos y (AQ em ha, FC absoluto) ---
 #st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor (absoluto)")
