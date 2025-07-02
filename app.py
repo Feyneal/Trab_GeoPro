@@ -47,7 +47,7 @@ except Exception as e:
     st.stop()
 
 # --- Tabela anual: área queimada e focos ---
-st.header("📊 Área Queimada Anual e Focos de Calor")
+st.header("📊 Tabela Anual de Área de Incendio Florestal e Focos de Calor")
 
 dados_tabela = []
 for ti in gdf_tis["TI_nome"]:
