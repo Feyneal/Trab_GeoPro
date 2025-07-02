@@ -206,35 +206,21 @@ colormap.add_to(m)
 
 folium.LayerControl().add_to(m)
 
-# Detecta tema atual do Streamlit
-tema_escuro = st.get_option("theme.base") == "dark"
+legend_html = """
+<div style='position: fixed;
+     bottom: 35px; right: 35px; width: 190px; height: auto;
+     z-index:9999; font-size:13px;
+     background-color: white;
+     color: black;
+     padding: 10px;
+     border:2px solid grey;
+     border-radius:5px;
+     box-shadow: 2px 2px 5px rgba(0,0,0,0.3);'>
 
-# Define cores com base no tema
-bg_color = "#1e1e1e" if tema_escuro else "white"
-text_color = "white" if tema_escuro else "black"
-border_color = "#888" if tema_escuro else "#444"
-
-legend_html = f"""
-<div style="
-    position: fixed;
-    bottom: 35px;
-    right: 35px;
-    z-index: 9999;
-    background-color: {bg_color};
-    border: 2px solid {border_color};
-    border-radius: 6px;
-    padding: 10px;
-    font-family: Arial, sans-serif;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-">
-    <p style="margin: 0; color: {text_color}; font-weight: bold;">
-        🔵 <span style="color: {text_color};">Focos de Calor</span>
-    </p>
-    <p style="margin: 4px 0 0 0; color: {text_color};">
-        Tamanho proporcional<br>
-        à quantidade de focos<br>
-        no trimestre selecionado.
-    </p>
+<b>🔵 Focos de Calor</b><br>
+Tamanho proporcional<br>
+à quantidade de focos<br>
+no trimestre selecionado.
 </div>
 """
 m.get_root().html.add_child(folium.Element(legend_html))
