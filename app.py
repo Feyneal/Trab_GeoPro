@@ -17,16 +17,16 @@ CSV_TRIMESTRAL_FC = os.path.join(BASE_DIR, "data", "CSV_Trimestral", "FC_trimest
 
 # --- Trimestres nomeados ---
 trimestres_nome = {
-    "2": "Começo da estação seca (Mai-Jun-Jul)",
-    "3": "Estação seca (Ago-Set-Out)",
-    "4": "Começo da estação húmida (Nov-Dez-Jan)",
-    "1": "Estação húmida (Fev-Mar-Abr)"
+    "1": "Começo da estação seca (Mai-Jun-Jul)",
+    "2": "Estação seca (Ago-Set-Out)",
+    "3": "Começo da estação húmida (Nov-Dez-Jan)",
+    "4": "Estação húmida (Fev-Mar-Abr)"
 }
 mapa_trimestres = {
-    "2": [5, 6, 7],
-    "3": [8, 9, 10],
-    "4": [11, 12, 1],
-    "1": [2, 3, 4]
+    "1": [5, 6, 7],
+    "2": [8, 9, 10],
+    "3": [11, 12, 1],
+    "4": [2, 3, 4]
 }
 
 # --- Interface ---
