@@ -128,32 +128,24 @@ try:
 
     anos = sorted(set(aq_df["Ano"]) & set(fc_df["Ano"]))
 
-    # Converte AQ para percentual da área total da TI
-    aq_vals_ha = aq_df[aq_df["Ano"].isin(anos)]["Area_Queimada_Anual"].values
-    aq_percent = 100 * aq_vals_ha / area_ti_ha
-
-    # FC absoluto
-    fc_vals = fc_df[fc_df["Ano"].isin(anos)]["Focos_Anual"].values
-
     fig, ax = plt.subplots(figsize=(10, 4))
 
-    # Eixo principal para AQ percentual
-    ax.plot(anos, aq_percent, color="red", marker='o', label="Área Queimada (%)")
-    ax.set_ylabel("Área Queimada (%)", color="red")
+    # Eixo principal para AQ em hectares (valor absoluto)
+    ax.plot(anos, aq_vals_ha, color="red", marker='o', label="Área Queimada (ha)")
+    ax.set_ylabel("Área Queimada (ha)", color="red")
     ax.tick_params(axis='y', labelcolor="red")
-    ax.set_ylim(0, aq_percent.max()*1.1)
+    ax.set_ylim(0, aq_vals_ha.max() * 1.1)  # limite 10% acima do máximo absoluto
 
     # Eixo secundário para FC absoluto
     ax2 = ax.twinx()
     ax2.plot(anos, fc_vals, color="blue", marker='o', label="Focos de Calor (número)")
     ax2.set_ylabel("Focos de Calor (número)", color="blue")
     ax2.tick_params(axis='y', labelcolor="blue")
-    ax2.set_ylim(0, fc_vals.max() * 1.1)  # um pouco acima do máximo de focos
+    ax2.set_ylim(0, fc_vals.max() * 1.1)
 
     ax.set_title(f"Comparativo Temporal em {ti_escolhida}")
     ax.set_xlabel("Ano")
 
-    # Legenda combinada
     lines, labels = ax.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
     ax.legend(lines + lines2, labels + labels2, loc="upper left")
@@ -161,6 +153,7 @@ try:
     ax.grid(True)
 
     st.pyplot(fig)
+
 
 except Exception as e:
     st.warning(f"Erro ao carregar dados de {ti_escolhida}: {e}")
