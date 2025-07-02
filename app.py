@@ -105,16 +105,10 @@ for ti in gdf_tis["TI_nome"]:
 # Exibe a tabela
 st.dataframe(pd.DataFrame(dados_tabela))
 
-# --- Gráfico de série temporal por TI com dois eixos y ---
-st.header("📈 Evolução Temporal de Área Queimada (%) e Focos de Calor (absoluto)")
+# --- Gráfico de série temporal por TI com dois eixos y (AQ em ha, FC absoluto) ---
+st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor (absoluto)")
 
 ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
-
-# Busca a área da TI para conversão em percentual
-area_ti_m2 = gdf_tis.loc[gdf_tis["TI_nome"] == ti_escolhida, "geometry"].area.values[0]  # área em graus²
-# Aproxima área em hectares: 1 grau ~ 111.32 km (convertendo graus² para m²)
-area_ti_ha = area_ti_m2 * (111320**2)  # m² para hectares (1 ha = 10^4 m²)
-area_ti_ha = area_ti_ha.item() if hasattr(area_ti_ha, "item") else area_ti_ha
 
 csv_aq = os.path.join(CSV_ANUAL_AQ, f"area_queimada_anual_{ti_escolhida}.csv")
 csv_fc = os.path.join(CSV_ANUAL_FC, f"focos_calor_anual_{ti_escolhida}.csv")
@@ -127,15 +121,19 @@ try:
     fc_df = fc_df.dropna(subset=["Focos_Anual"])
 
     anos = sorted(set(aq_df["Ano"]) & set(fc_df["Ano"]))
+
+    # Valores absolutos em hectares
     aq_vals_ha = aq_df[aq_df["Ano"].isin(anos)]["Area_Queimada_Anual"].values
+    # Valores absolutos focos de calor
+    fc_vals = fc_df[fc_df["Ano"].isin(anos)]["Focos_Anual"].values
 
     fig, ax = plt.subplots(figsize=(10, 4))
 
-    # Eixo principal para AQ em hectares (valor absoluto)
+    # Eixo principal para AQ em hectares
     ax.plot(anos, aq_vals_ha, color="red", marker='o', label="Área Queimada (ha)")
     ax.set_ylabel("Área Queimada (ha)", color="red")
     ax.tick_params(axis='y', labelcolor="red")
-    ax.set_ylim(0, aq_vals_ha.max() * 1.1)  # limite 10% acima do máximo absoluto
+    ax.set_ylim(0, aq_vals_ha.max() * 1.1)  # Limite 10% acima do máximo
 
     # Eixo secundário para FC absoluto
     ax2 = ax.twinx()
@@ -147,6 +145,7 @@ try:
     ax.set_title(f"Comparativo Temporal em {ti_escolhida}")
     ax.set_xlabel("Ano")
 
+    # Legenda combinada
     lines, labels = ax.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
     ax.legend(lines + lines2, labels + labels2, loc="upper left")
@@ -154,7 +153,6 @@ try:
     ax.grid(True)
 
     st.pyplot(fig)
-
 
 except Exception as e:
     st.warning(f"Erro ao carregar dados de {ti_escolhida}: {e}")
