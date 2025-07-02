@@ -212,25 +212,25 @@ legend_html = """
     position: fixed;
     bottom: 35px;
     right: 35px;
-    width: 230px;
     z-index: 9999;
-    background-color: #ffffff !important;
+    background-color: white;
     border: 2px solid #444;
     border-radius: 6px;
     padding: 10px;
-    font-size: 13px;
     font-family: Arial, sans-serif;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-    color: #000000 !important;
 ">
-    <b style="color:#000000 !important;">🔵 Focos de Calor</b><br>
-    <span style="color:#000000 !important;">
+    <p style="margin: 0; color: black; font-weight: bold;">
+        🔵 <span style="color: black;">Focos de Calor</span>
+    </p>
+    <p style="margin: 4px 0 0 0; color: black;">
         Tamanho proporcional<br>
         à quantidade de focos<br>
         no trimestre selecionado.
-    </span>
+    </p>
 </div>
 """
+
 
 
 
