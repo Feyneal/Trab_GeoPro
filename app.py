@@ -105,12 +105,17 @@ for ti in gdf_tis["TI_nome"]:
 # Exibe a tabela
 st.dataframe(pd.DataFrame(dados_tabela))
 
-# --- Gráfico de série temporal por TI ---
-st.header("📈 Evolução Temporal de Área Queimada e Focos de Calor")
+# --- Gráfico de série temporal por TI com dois eixos y ---
+st.header("📈 Evolução Temporal de Área Queimada (%) e Focos de Calor (absoluto)")
 
 ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
 
-# Caminhos para CSVs da TI selecionada
+# Busca a área da TI para conversão em percentual
+area_ti_m2 = gdf_tis.loc[gdf_tis["TI_nome"] == ti_escolhida, "geometry"].area.values[0]  # área em graus²
+# Aproxima área em hectares: 1 grau ~ 111.32 km (convertendo graus² para m²)
+area_ti_ha = area_ti_m2 * (111320**2)  # m² para hectares (1 ha = 10^4 m²)
+area_ti_ha = area_ti_ha.item() if hasattr(area_ti_ha, "item") else area_ti_ha
+
 csv_aq = os.path.join(CSV_ANUAL_AQ, f"area_queimada_anual_{ti_escolhida}.csv")
 csv_fc = os.path.join(CSV_ANUAL_FC, f"focos_calor_anual_{ti_escolhida}.csv")
 
@@ -118,49 +123,47 @@ try:
     aq_df = pd.read_csv(csv_aq)
     fc_df = pd.read_csv(csv_fc)
 
-    #st.write(f"Arquivo AQ: {csv_aq}")
-    #st.write(aq_df.head())
-
-    #st.write(f"Arquivo FC: {csv_fc}")
-    #st.write(fc_df.head())
-
     aq_df = aq_df.dropna(subset=["Area_Queimada_Anual"])
     fc_df = fc_df.dropna(subset=["Focos_Anual"])
 
     anos = sorted(set(aq_df["Ano"]) & set(fc_df["Ano"]))
-    #st.write("Anos comuns:", anos)
 
-    aq_vals = aq_df[aq_df["Ano"].isin(anos)]["Area_Queimada_Anual"].values
+    # Converte AQ para percentual da área total da TI
+    aq_vals_ha = aq_df[aq_df["Ano"].isin(anos)]["Area_Queimada_Anual"].values
+    aq_percent = 100 * aq_vals_ha / area_ti_ha
+
+    # FC absoluto
     fc_vals = fc_df[fc_df["Ano"].isin(anos)]["Focos_Anual"].values
 
-    #st.write("Valores AQ:", aq_vals)
-    #st.write("Valores FC:", fc_vals)
-
-    # Normaliza para comparar como percentual (0-100%)
-    if len(aq_vals) > 1:
-        aq_norm = 100 * (aq_vals - min(aq_vals)) / (max(aq_vals) - min(aq_vals))
-    else:
-        aq_norm = aq_vals
-
-    if len(fc_vals) > 1:
-        fc_norm = 100 * (fc_vals - min(fc_vals)) / (max(fc_vals) - min(fc_vals))
-    else:
-        fc_norm = fc_vals
-
     fig, ax = plt.subplots(figsize=(10, 4))
-    ax.plot(anos, aq_norm, color="red", marker='o', label="Área Queimada (%)")
-    ax.plot(anos, fc_norm, color="blue", marker='o', label="Focos de Calor (%)")
+
+    # Eixo principal para AQ percentual
+    ax.plot(anos, aq_percent, color="red", marker='o', label="Área Queimada (%)")
+    ax.set_ylabel("Área Queimada (%)", color="red")
+    ax.tick_params(axis='y', labelcolor="red")
+    ax.set_ylim(0, max(100, aq_percent.max()*1.1))  # Limite de 100% ou um pouco acima do máximo
+
+    # Eixo secundário para FC absoluto
+    ax2 = ax.twinx()
+    ax2.plot(anos, fc_vals, color="blue", marker='o', label="Focos de Calor (número)")
+    ax2.set_ylabel("Focos de Calor (número)", color="blue")
+    ax2.tick_params(axis='y', labelcolor="blue")
+    ax2.set_ylim(0, fc_vals.max() * 1.1)  # um pouco acima do máximo de focos
+
     ax.set_title(f"Comparativo Temporal em {ti_escolhida}")
     ax.set_xlabel("Ano")
-    ax.set_ylabel("Valor Normalizado (%)")
-    ax.legend()
+
+    # Legenda combinada
+    lines, labels = ax.get_legend_handles_labels()
+    lines2, labels2 = ax2.get_legend_handles_labels()
+    ax.legend(lines + lines2, labels + labels2, loc="upper left")
+
     ax.grid(True)
 
     st.pyplot(fig)
 
 except Exception as e:
     st.warning(f"Erro ao carregar dados de {ti_escolhida}: {e}")
-
 
 # --- Mapa Interativo ---
 st.header("🗺️ Visualização Trimestral no Mapa")
