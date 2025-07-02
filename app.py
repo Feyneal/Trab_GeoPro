@@ -206,24 +206,33 @@ colormap.add_to(m)
 
 folium.LayerControl().add_to(m)
 
-legend_html = """
+# Detecta tema atual
+tema_escuro = st.get_option("theme.base") == "dark"
+bg_color = "#1e1e1e" if tema_escuro else "white"
+text_color = "white" if tema_escuro else "black"
+border_color = "#888" if tema_escuro else "#444"
+
+legend_html = f"""
 <div style='position: fixed;
-     bottom: 35px; right: 35px; width: 190px; height: auto;
+     bottom: 35px; right: 35px; width: 200px; height: auto;
      z-index:9999; font-size:13px;
-     background-color: white;
-     color: black;
+     background-color: {bg_color};
+     color: {text_color};
      padding: 10px;
-     border:2px solid grey;
+     border:2px solid {border_color};
      border-radius:5px;
      box-shadow: 2px 2px 5px rgba(0,0,0,0.3);'>
 
-<b>🔵 Focos de Calor</b><br>
+<b style="color:{text_color};">🔵 Focos de Calor</b><br>
+<span style="color:{text_color};">
 Tamanho proporcional<br>
 à quantidade de focos<br>
 no trimestre selecionado.
+</span>
 </div>
 """
 m.get_root().html.add_child(folium.Element(legend_html))
+
 
 st_folium(m, width=1000, height=600)
 
