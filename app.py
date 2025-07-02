@@ -53,6 +53,9 @@ with col4:
     trimestre_nome = st.selectbox("Selecione o trimestre", list(trimestres_nome.values()))
     trimestre = [k for k, v in trimestres_nome.items() if v == trimestre_nome][0]    
 
+with col5:
+    ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
+
 # --- Carrega GeoJSON ---
 try:
     gdf_tis = gpd.read_file(TI_GEOJSON)
@@ -63,7 +66,7 @@ except Exception as e:
     st.stop()
 
 # --- Tabela combinada: área queimada e focos anuais + trimestrais ---
-st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
+#st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
 
 dados_tabela = []
 meses_trimestre = mapa_trimestres[trimestre]
@@ -120,9 +123,9 @@ for ti in gdf_tis["TI_nome"]:
 st.dataframe(pd.DataFrame(dados_tabela))
 
 # --- Gráfico de série temporal por TI com dois eixos y (AQ em ha, FC absoluto) ---
-st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor (absoluto)")
+#st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor (absoluto)")
 
-ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
+#ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
 
 csv_aq = os.path.join(CSV_ANUAL_AQ, f"area_queimada_anual_{ti_escolhida}.csv")
 csv_fc = os.path.join(CSV_ANUAL_FC, f"focos_calor_anual_{ti_escolhida}.csv")
