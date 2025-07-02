@@ -118,17 +118,34 @@ try:
     aq_df = pd.read_csv(csv_aq)
     fc_df = pd.read_csv(csv_fc)
 
-    # Remove valores inválidos
+    st.write(f"Arquivo AQ: {csv_aq}")
+    st.write(aq_df.head())
+
+    st.write(f"Arquivo FC: {csv_fc}")
+    st.write(fc_df.head())
+
     aq_df = aq_df.dropna(subset=["Area_Queimada_Anual"])
     fc_df = fc_df.dropna(subset=["Focos_Anual"])
 
     anos = sorted(set(aq_df["Ano"]) & set(fc_df["Ano"]))
+    st.write("Anos comuns:", anos)
+
     aq_vals = aq_df[aq_df["Ano"].isin(anos)]["Area_Queimada_Anual"].values
     fc_vals = fc_df[fc_df["Ano"].isin(anos)]["Focos_Anual"].values
 
+    st.write("Valores AQ:", aq_vals)
+    st.write("Valores FC:", fc_vals)
+
     # Normaliza para comparar como percentual (0-100%)
-    aq_norm = 100 * (aq_vals - min(aq_vals)) / (max(aq_vals) - min(aq_vals)) if len(aq_vals) > 1 else aq_vals
-    fc_norm = 100 * (fc_vals - min(fc_vals)) / (max(fc_vals) - min(fc_vals)) if len(fc_vals) > 1 else fc_vals
+    if len(aq_vals) > 1:
+        aq_norm = 100 * (aq_vals - min(aq_vals)) / (max(aq_vals) - min(aq_vals))
+    else:
+        aq_norm = aq_vals
+
+    if len(fc_vals) > 1:
+        fc_norm = 100 * (fc_vals - min(fc_vals)) / (max(fc_vals) - min(fc_vals))
+    else:
+        fc_norm = fc_vals
 
     fig, ax = plt.subplots(figsize=(10, 4))
     ax.plot(anos, aq_norm, color="red", marker='o', label="Área Queimada (%)")
@@ -143,6 +160,7 @@ try:
 
 except Exception as e:
     st.warning(f"Erro ao carregar dados de {ti_escolhida}: {e}")
+
 
 # --- Mapa Interativo ---
 st.header("🗺️ Visualização Trimestral no Mapa")
