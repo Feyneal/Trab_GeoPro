@@ -35,23 +35,23 @@ mapa_trimestres = {
 st.title("🔥 Dashboard de Incendios em Terras Indígenas")
 
 # Seletor lado a lado
-col1, col2, col3 = st.columns(3)
+col1, col2 = st.columns(2)
 
 with col1:
-    ano = st.selectbox("Selecione o ano", list(range(2012, 2024)), index=0)
+    st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
 
 with col2:
-    trimestre_nome = st.selectbox("Selecione o trimestre", list(trimestres_nome.values()))
-    trimestre = [k for k, v in trimestres_nome.items() if v == trimestre_nome][0]
-
-with col3:
     st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor (absoluto)")
 
-col4, col5 = st.columns(2)
+
+col3, col4, col5 = st.columns(2)
+
+with col3:
+    ano = st.selectbox("Selecione o ano", list(range(2012, 2024)), index=0)
 
 with col4:
-    st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
-    
+    trimestre_nome = st.selectbox("Selecione o trimestre", list(trimestres_nome.values()))
+    trimestre = [k for k, v in trimestres_nome.items() if v == trimestre_nome][0]    
 
 # --- Carrega GeoJSON ---
 try:
