@@ -50,7 +50,7 @@ with col1:
     st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
 
 with col2:
-    st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor (absoluto)")
+    st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor")
 
 
 col3, col4, col5 = st.columns(3)
