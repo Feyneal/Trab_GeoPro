@@ -212,25 +212,25 @@ legend_html = """
     position: fixed;
     bottom: 35px;
     right: 35px;
-    width: 190px;
-    height: auto;
-    z-index:9999;
-    font-size:13px;
-    background-color: white;
-    color: black !important;
+    width: 220px;
+    z-index: 9999;
+    background-color: #ffffff;
+    border: 2px solid #444;
+    border-radius: 5px;
     padding: 10px;
-    border:2px solid grey;
-    border-radius:5px;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    font-size: 13px;
     font-family: Arial, sans-serif;
-    line-height: 1.4;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
 ">
-<b>🔵 Focos de Calor</b><br>
-Tamanho proporcional<br>
-à quantidade de focos<br>
-no trimestre selecionado.
+    <div style="color: #000000 !important;">
+        <b>🔵 Focos de Calor</b><br>
+        Tamanho proporcional<br>
+        à quantidade de focos<br>
+        no trimestre selecionado.
+    </div>
 </div>
 """
+
 
 m.get_root().html.add_child(folium.Element(legend_html))
 
