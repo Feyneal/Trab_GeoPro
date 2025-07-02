@@ -46,6 +46,11 @@ with col2:
 
 with col3:
     st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor (absoluto)")
+
+col4, col5 = st.columns(2)
+
+with col4:
+    st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
     
 
 # --- Carrega GeoJSON ---
