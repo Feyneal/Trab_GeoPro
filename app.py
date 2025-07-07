@@ -41,7 +41,7 @@ except Exception as e:
     st.stop()
     
 # --- Interface ---st.set_page_config(layout="wide")
-st.title("🔥 Dashboard de Incendios em Terras Indígenas")
+st.title("🔥 Regime de fogo em Terras Indígenas da Amazônia ao longo dos anos")
 
 # Seletor lado a lado
 col1, col2 = st.columns([2,1])
