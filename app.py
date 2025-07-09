@@ -48,7 +48,7 @@ st.title("🔥 Regime de fogo em Terras Indígenas da Amazônia ao longo dos ano
 col1, col2 = st.columns([2,1])
 
 with col1:
-    st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
+    st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor")
 
 with col2:
     st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor")
