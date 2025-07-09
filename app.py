@@ -155,7 +155,7 @@ try:
 
     # Eixo secundário para FC absoluto
     ax2 = ax.twinx()
-    ax2.plot(anos, fc_vals, color="blue", marker='o', label="Focos de Calor (número)")
+    ax2.plot(anos, fc_vals, color="blue", marker='o', label="Focos de Calor")
     ax2.set_ylabel("Focos de Calor", color="blue")
     ax2.tick_params(axis='y', labelcolor="blue")
     ax2.set_ylim(0, fc_vals.max() * 1.1)
