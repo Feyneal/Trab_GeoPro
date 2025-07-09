@@ -40,7 +40,8 @@ except Exception as e:
     st.error(f"Erro ao carregar o GeoJSON: {e}")
     st.stop()
     
-# --- Interface ---st.set_page_config(layout="wide")
+# --- Interface ---
+st.set_page_config(layout="wide")
 st.title("🔥 Regime de fogo em Terras Indígenas da Amazônia ao longo dos anos")
 
 # Seletor lado a lado
