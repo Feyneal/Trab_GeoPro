@@ -254,7 +254,7 @@ centro_x = gdf_tis.geometry.centroid.x.mean()
 m = folium.Map(location=[centro_y, centro_x], zoom_start=5, tiles="CartoDB positron")
 
 # Multiplica a proporção para converter em %
-gdf_tis["rel_area_queimada"] = gdf_tis["rel_area_queimada"] / 1000
+gdf_tis["rel_area_queimada"] = gdf_tis["rel_area_queimada"] / 100
 
 # Criar colormap em porcentagem
 colormap = cm.linear.YlOrRd_09.scale(
