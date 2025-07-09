@@ -54,17 +54,26 @@ with col2:
     st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor")
 
 
-col3, col4, col5 = st.columns(3)
+# col3, col4, col5 = st.columns(3)
 
-with col3:
-    ano = st.selectbox("Selecione o ano", list(range(2012, 2024)), index=0)
+# with col3:
+#     ano = st.selectbox("Selecione o ano", list(range(2012, 2024)), index=0)
 
-with col4:
-    trimestre_nome = st.selectbox("Selecione o trimestre", list(trimestres_nome.values()))
-    trimestre = [k for k, v in trimestres_nome.items() if v == trimestre_nome][0]    
+# with col4:
+#     trimestre_nome = st.selectbox("Selecione o trimestre", list(trimestres_nome.values()))
+#     trimestre = [k for k, v in trimestres_nome.items() if v == trimestre_nome][0]    
 
-with col5:
-    ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
+# with col5:
+#     ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
+
+st.sidebar.header("Filtros de Análise")
+
+ano = st.sidebar.selectbox("Selecione o ano", list(range(2012, 2024)), index=0)
+
+trimestre_nome = st.sidebar.selectbox("Selecione o trimestre", list(trimestres_nome.values()))
+trimestre = [k for k, v in trimestres_nome.items() if v == trimestre_nome][0]
+
+ti_escolhida = st.sidebar.selectbox("Selecione a Terra Indígena", gdf_tis["TI_nome"])
 
 # --- Tabela combinada: área queimada e focos anuais + trimestrais ---
 #st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
