@@ -230,7 +230,7 @@ for _, row in gdf_tis.iterrows():
         focos_trimestre = fc_csv[fc_csv["Mes"].isin(meses_trimestre)]["Total_Focos"].sum()
 
         # Área relativa normalizada
-        area_ti = geom.area
+        area_ti = geom.area * 100
         rel = area_trimestre / area_ti if area_ti > 0 else 0
         col_areas.append(rel)
 
