@@ -230,7 +230,7 @@ for _, row in gdf_tis.iterrows():
         focos_trimestre = fc_csv[fc_csv["Mes"].isin(meses_trimestre)]["Total_Focos"].sum()
 
         # Área relativa normalizada
-        area_ti = geom.area * (111.32**2)
+        area_ti = geom.area
         rel = area_trimestre / area_ti if area_ti > 0 else 0
         col_areas.append(rel)
 
@@ -254,7 +254,7 @@ centro_x = gdf_tis.geometry.centroid.x.mean()
 m = folium.Map(location=[centro_y, centro_x], zoom_start=5, tiles="CartoDB positron")
 
 # Multiplica a proporção para converter em %
-gdf_tis["rel_area_queimada"] = gdf_tis["rel_area_queimada"]
+gdf_tis["rel_area_queimada"] = gdf_tis["rel_area_queimada"] * 100
 
 # Criar colormap em porcentagem
 colormap = cm.linear.YlOrRd_09.scale(
