@@ -170,7 +170,7 @@ try:
     lines + lines2,
     labels + labels2,
     loc="upper center",
-    bbox_to_anchor=(0.5, 1),
+    bbox_to_anchor=(0.5, 1.15),
     ncol=2,
     frameon=False)
 
