@@ -41,7 +41,7 @@ except Exception as e:
     st.stop()
     
 # --- Interface ---
-st.set_page_config(layout="wide")
+#st.set_page_config(layout="wide")
 st.title("🔥 Regime de fogo em Terras Indígenas da Amazônia ao longo dos anos")
 
 # Seletor lado a lado
