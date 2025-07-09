@@ -166,7 +166,14 @@ try:
     # Legenda combinada
     lines, labels = ax.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
-    ax.legend(lines + lines2, labels + labels2, loc="upper left")
+    ax.legend(
+    lines + lines2,
+    labels + labels2,
+    loc="upper center",
+    bbox_to_anchor=(0.5, -0.15),
+    ncol=2,
+    frameon=False)
+
 
     ax.grid(True)
 
