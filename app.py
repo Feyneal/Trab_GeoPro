@@ -189,7 +189,7 @@ for _, row in gdf_tis.iterrows():
 
         area_ti_km2 = geom.area * (111.32**2)  # área da TI em km²
         area_trim_km2 = area_trim / 100        # área queimada em km²
-        proporcao = area_trim_km2 / area_ti_km2 if area_ti_km2 > 0 else 0
+        proporcao = (area_trim_km2 / area_ti_km2) *100 if area_ti_km2 > 0 else 0
 
         col_areas.append(proporcao)
 
