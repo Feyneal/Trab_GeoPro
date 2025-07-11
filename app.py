@@ -1,3 +1,8 @@
+# ============================
+# 🔥 DASHBOARD DE REGIME DE FOGO EM TERRAS INDÍGENAS DA AMAZÔNIA
+# ============================
+
+# Bibliotecas
 import os
 import pandas as pd
 import geopandas as gpd
@@ -8,16 +13,17 @@ import branca.colormap as cm
 import matplotlib.pyplot as plt
 from streamlit_folium import st_folium
 
-
-# --- Caminhos base ---
+# ============================
+# ⚙️ CONFIGURAÇÃO E CAMINHOS
+# ============================
 BASE_DIR = os.path.dirname(__file__)
+
 TI_GEOJSON = os.path.join(BASE_DIR, "data", "TIS_amazonia.geojson")
 CSV_ANUAL_AQ = os.path.join(BASE_DIR, "data", "CSV_Anual", "AreaQueimada_Anual")
 CSV_ANUAL_FC = os.path.join(BASE_DIR, "data", "CSV_Anual", "FocosCalor_Anual")
 CSV_TRIMESTRAL_AQ = os.path.join(BASE_DIR, "data", "CSV_Trimestral", "AQ_trimestral")
 CSV_TRIMESTRAL_FC = os.path.join(BASE_DIR, "data", "CSV_Trimestral", "FC_trimestral")
 
-# --- Trimestres nomeados ---
 trimestres_nome = {
     "1": "Começo da estação seca (Mai-Jun-Jul)",
     "2": "Estação seca (Ago-Set-Out)",
@@ -31,7 +37,9 @@ mapa_trimestres = {
     "4": [2, 3, 4]
 }
 
-# --- Carrega GeoJSON ---
+# ============================
+# 🌍 CARREGAMENTO DOS DADOS
+# ============================
 try:
     gdf_tis = gpd.read_file(TI_GEOJSON)
     gdf_tis["TI_nome"] = gdf_tis["Nome_TI"].astype(str)
@@ -39,87 +47,65 @@ try:
 except Exception as e:
     st.error(f"Erro ao carregar o GeoJSON: {e}")
     st.stop()
-    
-# --- Interface ---
+
+# ============================
+# 🖼️ INTERFACE DO USUÁRIO
+# ============================
 st.set_page_config(layout="wide")
 st.title("🔥 Regime de fogo em Terras Indígenas da Amazônia ao longo dos anos")
 
-# Seletor lado a lado
-col1, col2 = st.columns([2,1])
-
+# Títulos principais
+col1, col2 = st.columns([2, 1])
 with col1:
     st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor")
-
 with col2:
     st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor")
 
-
-# col3, col4, col5 = st.columns(3)
-
-# with col3:
-#     ano = st.selectbox("Selecione o ano", list(range(2012, 2024)), index=0)
-
-# with col4:
-#     trimestre_nome = st.selectbox("Selecione o trimestre", list(trimestres_nome.values()))
-#     trimestre = [k for k, v in trimestres_nome.items() if v == trimestre_nome][0]    
-
-# with col5:
-#     ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
-
-st.sidebar.header("Filtros de Análise")
-
+# Barra lateral com filtros
+st.sidebar.header("🎛️ Filtros de Análise")
 ano = st.sidebar.selectbox("Selecione o ano", list(range(2012, 2024)), index=0)
-
 trimestre_nome = st.sidebar.selectbox("Selecione o trimestre", list(trimestres_nome.values()))
 trimestre = [k for k, v in trimestres_nome.items() if v == trimestre_nome][0]
-
 ti_escolhida = st.sidebar.selectbox("Selecione a Terra Indígena", gdf_tis["TI_nome"])
 
-# --- Tabela combinada: área queimada e focos anuais + trimestrais ---
-#st.header("📊 Tabela de Área de Incêndio Florestal e Focos de Calor (Anual e Trimestral)")
-
+# ============================
+# 📊 TABELA DE DADOS
+# ============================
 dados_tabela = []
 meses_trimestre = mapa_trimestres[trimestre]
 
 for ti in gdf_tis["TI_nome"]:
-    aq_anual_path = os.path.join(CSV_ANUAL_AQ, f"area_queimada_anual_{ti}.csv")
-    fc_anual_path = os.path.join(CSV_ANUAL_FC, f"focos_calor_anual_{ti}.csv")
-    aq_trim_path = os.path.join(CSV_TRIMESTRAL_AQ, f"{ti}_{ano}.csv")
-    fc_trim_path = os.path.join(CSV_TRIMESTRAL_FC, f"{ti}_{ano}.csv")
-
-    area_anual = focos_anual = area_trim = focos_trim = "-"
-
     try:
-        # --- Anual ---
-        aq_df = pd.read_csv(aq_anual_path)
-        fc_df = pd.read_csv(fc_anual_path)
-        area_val = aq_df.loc[aq_df["Ano"] == ano, "Area_Queimada_Anual"].values
-        focos_val = fc_df.loc[fc_df["Ano"] == ano, "Focos_Anual"].values
+        # Caminhos dos CSVs
+        aq_anual = pd.read_csv(os.path.join(CSV_ANUAL_AQ, f"area_queimada_anual_{ti}.csv"))
+        fc_anual = pd.read_csv(os.path.join(CSV_ANUAL_FC, f"focos_calor_anual_{ti}.csv"))
+        aq_trim = pd.read_csv(os.path.join(CSV_TRIMESTRAL_AQ, f"{ti}_{ano}.csv"))
+        fc_trim = pd.read_csv(os.path.join(CSV_TRIMESTRAL_FC, f"{ti}_{ano}.csv"))
 
-        if len(area_val) > 0:
-            area_anual = area_val[0].item() if isinstance(area_val[0], np.generic) else area_val[0]
-        if len(focos_val) > 0:
-            focos_anual = focos_val[0].item() if isinstance(focos_val[0], np.generic) else focos_val[0]
+        # Dados anuais
+        area_anual = aq_anual.loc[aq_anual["Ano"] == ano, "Area_Queimada_Anual"].values
+        focos_anual = fc_anual.loc[fc_anual["Ano"] == ano, "Focos_Anual"].values
+        area_anual = area_anual[0] if len(area_anual) > 0 else "-"
+        focos_anual = focos_anual[0] if len(focos_anual) > 0 else "-"
 
-        # --- Trimestral ---
-        aq_df_t = pd.read_csv(aq_trim_path)
-        aq_df_t["Month"] = pd.to_numeric(aq_df_t["Month"], errors='coerce')
+        # Trimestral - área
+        aq_trim["Month"] = pd.to_numeric(aq_trim["Month"], errors='coerce')
         if 1 in meses_trimestre and ano > 2012:
             aq_prev = pd.read_csv(os.path.join(CSV_TRIMESTRAL_AQ, f"{ti}_{ano - 1}.csv"))
             aq_prev["Month"] = pd.to_numeric(aq_prev["Month"], errors='coerce')
-            aq_df_t = pd.concat([aq_prev, aq_df_t], ignore_index=True)
-        area_trim = aq_df_t[aq_df_t["Month"].isin(meses_trimestre)]["Burned_Area_hectares"].sum()
+            aq_trim = pd.concat([aq_prev, aq_trim], ignore_index=True)
+        area_trim = aq_trim[aq_trim["Month"].isin(meses_trimestre)]["Burned_Area_hectares"].sum()
 
-        fc_df_t = pd.read_csv(fc_trim_path)
-        fc_df_t["Mes"] = pd.to_numeric(fc_df_t["Mes"], errors='coerce')
+        # Trimestral - focos
+        fc_trim["Mes"] = pd.to_numeric(fc_trim["Mes"], errors='coerce')
         if 1 in meses_trimestre and ano > 2012:
             fc_prev = pd.read_csv(os.path.join(CSV_TRIMESTRAL_FC, f"{ti}_{ano - 1}.csv"))
             fc_prev["Mes"] = pd.to_numeric(fc_prev["Mes"], errors='coerce')
-            fc_df_t = pd.concat([fc_prev, fc_df_t], ignore_index=True)
-        focos_trim = fc_df_t[fc_df_t["Mes"].isin(meses_trimestre)]["Total_Focos"].sum()
+            fc_trim = pd.concat([fc_prev, fc_trim], ignore_index=True)
+        focos_trim = fc_trim[fc_trim["Mes"].isin(meses_trimestre)]["Total_Focos"].sum()
 
-    except Exception as e:
-        pass
+    except Exception:
+        area_anual = focos_anual = area_trim = focos_trim = "-"
 
     dados_tabela.append({
         "Terra Indígena": ti,
@@ -129,40 +115,23 @@ for ti in gdf_tis["TI_nome"]:
         "Focos de Calor Trimestral": focos_trim
     })
 
-# Exibe a tabela
-#st.dataframe(pd.DataFrame(dados_tabela))
-
-# --- Gráfico de série temporal por TI com dois eixos y (AQ em ha, FC absoluto) ---
-#st.header("📈 Evolução Temporal de Área Queimada (ha) e Focos de Calor (absoluto)")
-
-#ti_escolhida = st.selectbox("Selecione a Terra Indígena para análise temporal", gdf_tis["TI_nome"])
-
-csv_aq = os.path.join(CSV_ANUAL_AQ, f"area_queimada_anual_{ti_escolhida}.csv")
-csv_fc = os.path.join(CSV_ANUAL_FC, f"focos_calor_anual_{ti_escolhida}.csv")
-
+# ============================
+# 📈 GRÁFICO TEMPORAL
+# ============================
 try:
-    aq_df = pd.read_csv(csv_aq)
-    fc_df = pd.read_csv(csv_fc)
-
-    aq_df = aq_df.dropna(subset=["Area_Queimada_Anual"])
-    fc_df = fc_df.dropna(subset=["Focos_Anual"])
+    aq_df = pd.read_csv(os.path.join(CSV_ANUAL_AQ, f"area_queimada_anual_{ti_escolhida}.csv")).dropna()
+    fc_df = pd.read_csv(os.path.join(CSV_ANUAL_FC, f"focos_calor_anual_{ti_escolhida}.csv")).dropna()
 
     anos = sorted(set(aq_df["Ano"]) & set(fc_df["Ano"]))
-
-    # Valores absolutos em hectares
-    aq_vals_ha = aq_df[aq_df["Ano"].isin(anos)]["Area_Queimada_Anual"].values
-    # Valores absolutos focos de calor
+    aq_vals = aq_df[aq_df["Ano"].isin(anos)]["Area_Queimada_Anual"].values
     fc_vals = fc_df[fc_df["Ano"].isin(anos)]["Focos_Anual"].values
 
     fig, ax = plt.subplots(figsize=(10, 5))
-
-    # Eixo principal para AQ em hectares
-    ax.plot(anos, aq_vals_ha, color="red", marker='o', label="Área Queimada (ha)")
+    ax.plot(anos, aq_vals, color="red", marker='o', label="Área Queimada (ha)")
     ax.set_ylabel("Área Queimada (ha)", color="red")
     ax.tick_params(axis='y', labelcolor="red")
-    ax.set_ylim(0, aq_vals_ha.max() * 1.1)  # Limite 10% acima do máximo
+    ax.set_ylim(0, aq_vals.max() * 1.1)
 
-    # Eixo secundário para FC absoluto
     ax2 = ax.twinx()
     ax2.plot(anos, fc_vals, color="blue", marker='o', label="Focos de Calor")
     ax2.set_ylabel("Focos de Calor", color="blue")
@@ -172,103 +141,79 @@ try:
     ax.set_title(f"Comparativo Temporal em {ti_escolhida}")
     ax.set_xlabel("Ano")
 
-    # Legenda combinada
-    lines, labels = ax.get_legend_handles_labels()
+    lines1, labels1 = ax.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
-    ax.legend(
-    lines + lines2,
-    labels + labels2,
-    loc="upper center",
-    bbox_to_anchor=(0.5, 1.025),
-    ncol=2,
-    frameon=False)
-
+    ax.legend(lines1 + lines2, labels1 + labels2, loc="upper center", bbox_to_anchor=(0.5, 1.025), ncol=2, frameon=False)
 
     ax.grid(True)
-
-    #st.pyplot(fig)
-
 except Exception as e:
-    st.warning(f"Erro ao carregar dados de {ti_escolhida}: {e}")
+    st.warning(f"Erro ao carregar dados temporais: {e}")
 
+# ============================
+# 📋 TABELA + GRÁFICO
+# ============================
+col_tabela, col_grafico = st.columns([2, 1])
+col_tabela.dataframe(pd.DataFrame(dados_tabela))
+col_grafico.pyplot(fig)
 
-col6, col7 = st.columns([2,1])
-
-with col6:
-    st.dataframe(pd.DataFrame(dados_tabela))
-    
-with col7:
-    st.pyplot(fig)
-
-# --- Mapa Interativo ---
+# ============================
+# 🗺️ MAPA TRIMESTRAL
+# ============================
 st.header("🗺️ Visualização Trimestral no Mapa")
 
 col_areas = []
 pontos_focos = []
-meses_trimestre = mapa_trimestres[trimestre]
 
 for _, row in gdf_tis.iterrows():
-    ti = row["TI_nome"]
-    geom = row["geometry"]
     try:
-        # ÁREA QUEIMADA
+        ti = row["TI_nome"]
+        geom = row["geometry"]
+
+        # Dados trimestrais de área
         aq_csv = pd.read_csv(os.path.join(CSV_TRIMESTRAL_AQ, f"{ti}_{ano}.csv"))
         aq_csv["Month"] = pd.to_numeric(aq_csv["Month"], errors='coerce')
         if 1 in meses_trimestre and ano > 2012:
             aq_prev = pd.read_csv(os.path.join(CSV_TRIMESTRAL_AQ, f"{ti}_{ano - 1}.csv"))
             aq_prev["Month"] = pd.to_numeric(aq_prev["Month"], errors='coerce')
             aq_csv = pd.concat([aq_prev, aq_csv], ignore_index=True)
-        area_trimestre = aq_csv[aq_csv["Month"].isin(meses_trimestre)]["Burned_Area_hectares"].sum()
+        area_trim = aq_csv[aq_csv["Month"].isin(meses_trimestre)]["Burned_Area_hectares"].sum()
 
-        # FOCOS DE CALOR
+        # Dados trimestrais de focos
         fc_csv = pd.read_csv(os.path.join(CSV_TRIMESTRAL_FC, f"{ti}_{ano}.csv"))
         fc_csv["Mes"] = pd.to_numeric(fc_csv["Mes"], errors='coerce')
         if 1 in meses_trimestre and ano > 2012:
             fc_prev = pd.read_csv(os.path.join(CSV_TRIMESTRAL_FC, f"{ti}_{ano - 1}.csv"))
             fc_prev["Mes"] = pd.to_numeric(fc_prev["Mes"], errors='coerce')
             fc_csv = pd.concat([fc_prev, fc_csv], ignore_index=True)
-        focos_trimestre = fc_csv[fc_csv["Mes"].isin(meses_trimestre)]["Total_Focos"].sum()
+        focos_trim = fc_csv[fc_csv["Mes"].isin(meses_trimestre)]["Total_Focos"].sum()
 
-        # Área relativa normalizada
-        area_ti = geom.area * (111.32**2)
-        rel = area_trimestre / area_ti if area_ti > 0 else 0
-        col_areas.append(rel)
+        area_ti_km2 = geom.area * (111.32**2)
+        proporcao = area_trim / area_ti_km2 if area_ti_km2 > 0 else 0
+        col_areas.append(proporcao)
 
         centroid = geom.centroid
-        pontos_focos.append({
-            "lat": centroid.y,
-            "lon": centroid.x,
-            "focos": focos_trimestre
-        })
+        pontos_focos.append({"lat": centroid.y, "lon": centroid.x, "focos": focos_trim})
 
-    except Exception as e:
+    except Exception:
         col_areas.append(0)
-        centroid = geom.centroid
+        centroid = row["geometry"].centroid
         pontos_focos.append({"lat": centroid.y, "lon": centroid.x, "focos": 0})
 
 gdf_tis["rel_area_queimada"] = col_areas
 
-# --- Mapa folium ---
+# Mapa folium
 centro_y = gdf_tis.geometry.centroid.y.mean()
 centro_x = gdf_tis.geometry.centroid.x.mean()
 m = folium.Map(location=[centro_y, centro_x], zoom_start=5, tiles="CartoDB positron")
 
-# Multiplica a proporção para converter em %
-gdf_tis["rel_area_queimada"] = gdf_tis["rel_area_queimada"]
-
-# Criar colormap em porcentagem
-colormap = cm.linear.YlOrRd_09.scale(
-    gdf_tis["rel_area_queimada"].min(),
-    gdf_tis["rel_area_queimada"].max()
-)
+colormap = cm.linear.YlOrRd_09.scale(gdf_tis["rel_area_queimada"].min(), gdf_tis["rel_area_queimada"].max())
 colormap.caption = "Área queimada relativa (%)"
 
-# Adiciona camada GeoJson colorida
+# Polígonos coloridos
 folium.GeoJson(
     gdf_tis,
-    name="TI",
-    style_function=lambda feature: {
-        "fillColor": colormap(feature["properties"]["rel_area_queimada"]),
+    style_function=lambda f: {
+        "fillColor": colormap(f["properties"]["rel_area_queimada"]),
         "color": "black",
         "weight": 0.8,
         "fillOpacity": 0.7
@@ -277,18 +222,11 @@ folium.GeoJson(
         fields=["TI_nome", "rel_area_queimada"],
         aliases=["TI", "Área queimada (%)"],
         localize=True,
-        sticky=False,
-        labels=True,
-        style="""
-            background-color: #F0EFEF;
-            border: 1px solid #CCC;
-            border-radius: 3px;
-            box-shadow: 3px;
-        """
+        sticky=False
     )
 ).add_to(m)
 
-# Pontos de focos de calor
+# Marcadores de focos
 for pt in pontos_focos:
     folium.CircleMarker(
         location=(pt["lat"], pt["lon"]),
@@ -300,36 +238,22 @@ for pt in pontos_focos:
     ).add_to(m)
 
 colormap.add_to(m)
-
 folium.LayerControl().add_to(m)
 
-# Detecta tema atual
+# Legenda de focos (customizada para tema escuro ou claro)
 tema_escuro = st.get_option("theme.base") == "dark"
-bg_color = "#1e1e1e" if tema_escuro else "white"
-text_color = "white" if tema_escuro else "black"
-border_color = "#888" if tema_escuro else "#444"
+bg = "#1e1e1e" if tema_escuro else "white"
+txt = "white" if tema_escuro else "black"
+bord = "#888" if tema_escuro else "#444"
 
-legend_html = f"""
-<div style='position: fixed;
-     top: 505px; left: 1000px; width: 200px; height: auto;
-     z-index:9999; font-size:13px;
-     background-color: {bg_color};
-     color: {text_color};
-     padding: 10px;
-     border:2px solid {border_color};
-     border-radius:5px;
-     box-shadow: 2px 2px 5px rgba(0,0,0,0.3);'>
-
-<b style="color:{text_color};">🔵 Focos de Calor</b><br>
-<span style="color:{text_color};">
-Tamanho proporcional<br>
-à quantidade de focos<br>
-no trimestre selecionado.
-</span>
+legenda_focos = f"""
+<div style='position: fixed; top: 505px; left: 1000px; width: 200px;
+     z-index:9999; font-size:13px; background-color: {bg}; color: {txt};
+     padding: 10px; border:2px solid {bord}; border-radius:5px; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);'>
+<b>🔵 Focos de Calor</b><br>
+<span>Tamanho proporcional à quantidade<br>de focos no trimestre selecionado.</span>
 </div>
 """
-m.get_root().html.add_child(folium.Element(legend_html))
-
+m.get_root().html.add_child(folium.Element(legenda_focos))
 
 st_folium(m, width=1000, height=600)
-
