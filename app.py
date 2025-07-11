@@ -187,8 +187,10 @@ for _, row in gdf_tis.iterrows():
             fc_csv = pd.concat([fc_prev, fc_csv], ignore_index=True)
         focos_trim = fc_csv[fc_csv["Mes"].isin(meses_trimestre)]["Total_Focos"].sum()
 
-        area_ti_km2 = geom.area * (111.32**2)
-        proporcao = area_trim / area_ti_km2 if area_ti_km2 > 0 else 0
+        area_ti_km2 = geom.area * (111.32**2)  # área da TI em km²
+        area_trim_km2 = area_trim / 100        # área queimada em km²
+        proporcao = area_trim_km2 / area_ti_km2 if area_ti_km2 > 0 else 0
+
         col_areas.append(proporcao)
 
         centroid = geom.centroid
